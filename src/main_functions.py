@@ -67,7 +67,7 @@ def close_related_tabs(web_profile: ChainOperaProfile):
         # Collect all handles for tabs with "OKX" in title
         for handle in web_profile.driver.window_handles:
             web_profile.driver.switch_to.window(handle)
-            if "OKX" in web_profile.driver.title.upper() or "ChainOpera" in web_profile.driver.title.upper():
+            if "OKX" in web_profile.driver.title.upper() or "CHAINOPERA" in web_profile.driver.title.upper():
                 okx_handles.append(handle)
 
         # Close each matching tab
