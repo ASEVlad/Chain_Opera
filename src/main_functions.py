@@ -59,7 +59,7 @@ def turn_to_proper_wallet(web_profile: ChainOperaProfile, okx_handle: str):
         logger.error(f"Profile_id: {web_profile.profile_id}. {trimmed_error_log}")
 
 
-def close_okx_tabs(web_profile: ChainOperaProfile):
+def close_related_tabs(web_profile: ChainOperaProfile):
     try:
         original_window = web_profile.driver.current_window_handle
         okx_handles = []
@@ -67,7 +67,7 @@ def close_okx_tabs(web_profile: ChainOperaProfile):
         # Collect all handles for tabs with "OKX" in title
         for handle in web_profile.driver.window_handles:
             web_profile.driver.switch_to.window(handle)
-            if "OKX" in web_profile.driver.title.upper():
+            if "OKX" in web_profile.driver.title.upper() or "ChainOpera" in web_profile.driver.title.upper():
                 okx_handles.append(handle)
 
         # Close each matching tab
@@ -112,6 +112,8 @@ def start_profile(web_profile):
     # open profile
     web_profile.open_profile()
     time.sleep(1)
+    close_related_tabs(web_profile)
+    time.sleep(1)
     web_profile.driver.switch_to.new_window('tab')
     time.sleep(1)
     web_profile.driver.get("https://chat.chainopera.ai/invite?code=RXSN3VOL")
@@ -130,7 +132,7 @@ def start_profile(web_profile):
     return website_handle, okx_handle
 
 def finalize_profile(web_profile):
-    close_okx_tabs(web_profile)
+    close_related_tabs(web_profile)
     web_profile.close_profile()
 
 def handle_error(web_profile, error):
@@ -227,6 +229,15 @@ def farm_daily_points(web_profile: ProfileManager, website_handle: str, okx_hand
             web_profile.driver.switch_to.window(okx_handle)
             time.sleep(1)
             wait_until_element_is_visible(web_profile, "xpath", "//div[text()='Confirm' or text()='Підтвердити']").click()
+            time.sleep(2)
+
+            warning_message = web_profile.driver.find_elements(
+                "xpath",
+                "//div[text()='Continue on this network' or text()='Продовжити в цій мережі']"
+            ).click()
+            if len(warning_message) == 1:
+                warning_message[0].click()
+
             time.sleep(1)
             web_profile.driver.switch_to.window(website_handle)
             time.sleep(1)
@@ -282,6 +293,7 @@ def get_earned_points(web_profile: ProfileManager):
             "xpath",
             "//span[text()='Total Points Earned']"
         )
+        time.sleep(5)
 
         points_text_xpath = get_full_xpath_element(web_profile.driver, points_text_element)
         points_info_xpath = points_text_xpath[:-8] + "[3]"
