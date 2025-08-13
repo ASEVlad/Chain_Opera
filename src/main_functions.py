@@ -234,7 +234,7 @@ def farm_daily_points(web_profile: ProfileManager, website_handle: str, okx_hand
             warning_message = web_profile.driver.find_elements(
                 "xpath",
                 "//div[text()='Continue on this network' or text()='Продовжити в цій мережі']"
-            ).click()
+            )
             if len(warning_message) == 1:
                 warning_message[0].click()
 
