@@ -298,7 +298,8 @@ def get_earned_points(web_profile: ProfileManager):
         points_text_xpath = get_full_xpath_element(web_profile.driver, points_text_element)
         points_info_xpath = points_text_xpath[:-8] + "[3]"
         points_info_element = wait_until_element_is_visible(web_profile, "xpath", points_info_xpath)
-        return int(points_info_element.find_element("xpath", ".//span").text)
+        points_text = points_info_element.find_element("xpath", ".//span").text
+        return int(points_text.replace(",", ""))
 
     except Exception as e:
         trimmed_error_log = trim_stacktrace_error(str(e))
