@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main():
     logger.add("logfile.log", rotation="2 MB", level="INFO")
+    logger.info(f"CHAIN_OPERA script just has started.")
 
     load_dotenv(os.path.abspath(os.path.join(BASE_DIR, ".env")))
     group_of_n = int(os.getenv('PARALLEL_ACCOUNTS'))
